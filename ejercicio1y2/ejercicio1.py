@@ -25,7 +25,7 @@ def run(folder):
             for i in range(img.shape[0]):
                 for j in range(img.shape[1]):
                     t=pixel(img[i][j])
-                    if (pixel(img[i][j])<lim):
+                    if (pixel(img[i][j])>lim):
                         out[i][j]=img[i][j]
             
             cv2.imshow('imagen inicial',img)
@@ -33,6 +33,6 @@ def run(folder):
             cv2.imshow('imagen final',out)
             cv2.waitKey()
 
-            cv2.imwrite('./out/e2out_'+filename,out)
+            cv2.imwrite('./out/e1out_'+filename,out)
 
 run('./img')
