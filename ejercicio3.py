@@ -1,9 +1,8 @@
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
-from PIL import Image
-image = cv2.imread('data/thresh3.png')
-cv2.imshow('Gray image', image)
+image = cv2.imread('imgs2/thresh3.png')
+cv2.imshow('imagen original', image)
 cv2.waitKey()
 gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 a = np.asarray(gray)
@@ -25,6 +24,6 @@ for i in range(len(a)):
         else:
             a[i][j]=255
 im_fin = np.uint8(a)
-cv2.imshow('image', im_fin)
+cv2.imshow('image final', im_fin)
 cv2.waitKey()
 cv2.imwrite('./out/e2out_thresh3.png',im_fin)
