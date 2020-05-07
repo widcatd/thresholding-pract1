@@ -35,4 +35,4 @@ def run(folder):
 
             cv2.imwrite('./out/e1out_'+filename,out)
 
-run('./img')
+run('./imgs1')
