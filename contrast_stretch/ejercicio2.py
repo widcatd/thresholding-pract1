@@ -1,0 +1,19 @@
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+image = cv2.imread('imput/img_contrast_stretching.jpg')
+cv2.imshow('imagen original', image)
+cv2.waitKey()
+gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+a_array = np.asarray(gray)
+for i in range(11):
+    for j in range(11):
+        a_array[i][j]=0
+im_fin = np.uint8(a_array)
+cv2.imshow('image final', im_fin)
+cv2.waitKey()
+cv2.imwrite('./out/ejercicio2.png',im_fin)
+image = cv2.imread('out/ejercicio2.png')
+hist = cv2.calcHist([image], [0], None, [256], [0, 256])
+plt.plot(hist, color='gray' )
+plt.show()
