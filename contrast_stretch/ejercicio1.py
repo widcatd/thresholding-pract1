@@ -27,7 +27,7 @@ for i in range(len(extremos)):
     if extremos[len(extremos)-1-i]!=0:
         d=float(len(extremos)-1-i)
         break
-
+#aplicando la formula de Contrast stretching
 for i in range(len(a_array)):
     for j in range(len(a_array[i])):
         a_array[i][j]=(a_array[i][j]-c)*(((b-a)/(d-c))+a)
