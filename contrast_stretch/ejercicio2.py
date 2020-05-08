@@ -6,7 +6,7 @@ cv2.imshow('imagen original', image)
 cv2.waitKey()
 gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 a_array = np.asarray(gray)
-#aplicando la formula de Contrast stretching
+#agregando un outlier a la imagen
 for i in range(20):
     for j in range(20):
         a_array[i][j]=0
