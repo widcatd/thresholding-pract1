@@ -58,6 +58,6 @@ def run(folder):
             plt.show()
 
             #guardamos la imagen generada
-            cv2.imwrite('./out/out3_'+filename,out)
+            cv2.imwrite('./out/out_'+filename,out)
 
-run('./input')
+run('./imput')
