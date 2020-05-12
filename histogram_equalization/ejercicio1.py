@@ -12,11 +12,12 @@ def run(folder):
     #Procesamos todos los elementos de la carpeta indicada
     for filename in os.listdir(folder):
         img = cv2.imread(os.path.join(folder,filename))
+        #Si el archivo es imagen:
         if img is not None:
             #mostramos imagen original
             cv2.imshow('imagen inicial',img)
             cv2.waitKey()
-            #calculamos el histograma
+            #calculamos el histograma por cada capa y los mostramos
             lh=[]
             ll=[]
             for i in range(len(img[0][0])):
@@ -24,11 +25,12 @@ def run(folder):
                 lh.append(h)
                 plt.plot(h)
                 plt.show()
-                
+                #calculamos los P(n)
                 ph=[0]*256
                 for i in range (len(h)):
                     ph[i]=h[i]/(img.shape[0]*img.shape[1])
                 
+                #calculamos los s(n)
                 sn=[]
                 for i in range(256):
                     t=0
@@ -41,7 +43,7 @@ def run(folder):
             #creamos una imagen en negro
             out=np.zeros(shape=img.shape,dtype=np.uint8)
 
-            #aplicamos contrast stretching con los topes en los 3 canales
+            #aplicamos el Histogram equalization en los 3 canales
             for i in range(len(img[0][0])):
                 for j in range(img.shape[0]):
                     for k in range(img.shape[1]):
