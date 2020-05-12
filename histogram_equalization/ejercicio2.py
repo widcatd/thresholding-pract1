@@ -17,13 +17,14 @@ def run(folder):
             #mostramos imagen original
             cv2.imshow('imagen inicial',img)
             cv2.waitKey()
+            #fijamos las coordenadas,el alto y ancho que tendra la sub-imagen
             x=150
             y=190
             w=120
             h=220
             #sacando una parte de la imagen
             sub_imagen= img[y:y+h, x:x+w]
-            #calculamos el histograma
+            #calculamos el histograma por cada capa y los mostramos
             lh=[]
             ll=[]
             for i in range(len(sub_imagen[0][0])):
