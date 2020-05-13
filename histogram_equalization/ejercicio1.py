@@ -39,7 +39,6 @@ def run(folder):
                     sn.append(math.floor(256*t))
                 ll.append(sn)
             
-            
             #creamos una imagen en negro
             out=np.zeros(shape=img.shape,dtype=np.uint8)
 
