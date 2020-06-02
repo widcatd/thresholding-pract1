@@ -4,7 +4,7 @@ import numpy as np
 from matplotlib import pyplot as plt 
 import math
 
-def op_sum(img,img2):
+def op_resta(img,img2):
     if img is not None and img2 is not None:
         #mostramos las imagenes originales
         cv2.imshow('Imagen inicial 1',img)
@@ -34,7 +34,7 @@ def run_exp(file1,file2):
     #Procesamos todos los elementos de la carpeta indicada
     img = cv2.imread(file1)
     img2=cv2.imread(file2)
-    out=op_sum(img,img2)
+    out=op_resta(img,img2)
     if out is not None:
         cv2.imwrite('./out1/out_ejercicio3.jpg',out)
         print("Imagenes Sumadas")
