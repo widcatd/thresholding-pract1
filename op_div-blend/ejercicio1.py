@@ -4,13 +4,11 @@ import numpy as np
 from matplotlib import pyplot as plt 
 import math
 
-def op_sum(img,c):
+def op_multi(img,c):
     if img is not None:
         #mostramos las imagenes originales
         cv2.imshow('Imagen inicial 1',img)
         cv2.waitKey()
-        #ajustamos el tamaño de la imagen 2 a la de la imagen 1
-        
         #creamos una imagen en negro
         out=np.zeros(shape=img.shape,dtype=np.uint8)
 
@@ -34,11 +32,10 @@ def run_exp(file1):
     #Procesamos todos los elementos de la carpeta indicada
     img = cv2.imread(file1)
     c=7 #constante
-    out=op_sum(img,c)
+    out=op_multi(img,c)
     if out is not None:
         cv2.imwrite('./out1/out_mul_4_7.jpg',out)
         print("Imagenes Sumadas")
     else:
         print("Imagenes no compatibles--")
-
 run_exp('./input1/mul_4.jpg') 

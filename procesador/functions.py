@@ -267,4 +267,60 @@ def op_blend(img,img2,x):
         #guardamos la imagen generada
     else:
         return(None)
+def op_division(img,img2):
+    if img is not None and img2 is not None:
+        #mostramos las imagenes originales
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        img2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
+        cv2.imshow('Imagen inicial 1',img)
+        cv2.waitKey()
+        cv2.imshow('Imagen inicial 2',img2)
+        cv2.waitKey()
+        #sacamos los valores minimos y maximos
+        mini=np.min(img)
+        maxi=np.max(img)
+        newmin=np.min(img2)
+        newmax=np.max(img2)
         
+        #ajustamos el tamaño de la imagen 2 a la de la imagen 1
+        img2=cv2.resize(img2, (img.shape[1], img.shape[0]))
+
+        #creamos una imagen en negro
+        out=np.zeros(shape=img.shape,dtype=np.uint8)
+        #creamos una constante
+        const=190
+        #aplicamos la suma en los 3 canales
+        for j in range(img.shape[0]):
+            for k in range(img.shape[1]):
+                out[j][k]=((((img[j][k]/img2[j][k])*const)-mini)*((newmax-newmin)/(maxi-mini)))+newmin
+        cv2.imshow('Imagen final',out)
+        cv2.waitKey()
+        return(out)
+        #guardamos la imagen generada
+    else:
+        return(None)
+def op_multi(img,c):
+    if img is not None:
+        #mostramos las imagenes originales
+        cv2.imshow('Imagen inicial 1',img)
+        cv2.waitKey()
+        #ajustamos el tamaño de la imagen 2 a la de la imagen 1
+        
+        #creamos una imagen en negro
+        out=np.zeros(shape=img.shape,dtype=np.uint8)
+
+        #aplicamos la suma en los 3 canales
+        for i in range(len(img[0][0])):
+            for j in range(img.shape[0]):
+                for k in range(img.shape[1]):
+                    if int(img[j][k][i]*c)>255:
+                        out[j][k][i]=255
+                    else:
+                        out[j][k][i]= int(img[j][k][i]*c)
+
+        cv2.imshow('Imagen final',out)
+        cv2.waitKey()
+        return(out)
+        #guardamos la imagen generada
+    else:
+        return(None)
