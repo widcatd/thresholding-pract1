@@ -206,4 +206,65 @@ def op_sum(img,img2):
         #guardamos la imagen generada
     else:
         return(None)
+
+def op_div(img,img2):
+    if img is not None and img2 is not None:
+        #mostramos las imagenes originales
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        img2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
+        cv2.imshow('Imagen inicial 1',img)
+        cv2.waitKey()
+        cv2.imshow('Imagen inicial 2',img2)
+        cv2.waitKey()
+
+        #ajustamos el tamaño de la imagen 2 a la de la imagen 1
+        img2=cv2.resize(img2, (img.shape[1], img.shape[0]))
+
+        mini=np.min(img)
+        maxi=np.max(img)
+        newmin=np.min(img2)
+        newmax=np.max(img2)
+
+        #creamos una imagen en negro
+        out=np.zeros(shape=img.shape,dtype=np.uint8)
+
+        
+        for j in range(img.shape[0]):
+            for k in range(img.shape[1]):
+                #out[j][k]=((img[j][k]-mini)*((newmax-newmin)/(maxi-mini)))+newmin
+                out[j][k]=int((img[j][k]/img2[j][k])*100)
+        
+        cv2.imshow('Imagen final',out)
+        cv2.waitKey()
+        return(out)
+        #guardamos la imagen generada
+    else:
+        return(None)
+
+def op_blend(img,img2,x):
+    if img is not None and img2 is not None:
+        #mostramos las imagenes originales
+        cv2.imshow('Imagen inicial 1',img)
+        cv2.waitKey()
+        cv2.imshow('Imagen inicial 2',img2)
+        cv2.waitKey()
+
+        #ajustamos el tamaño de la imagen 2 a la de la imagen 1
+        img2=cv2.resize(img2, (img.shape[1], img.shape[0]))
+
+        #creamos una imagen en negro
+        out=np.zeros(shape=img.shape,dtype=np.uint8)
+
+        for i in range(len(img[0][0])):
+            for j in range(img.shape[0]):
+                for k in range(img.shape[1]):
+                    #X ∗ P1(i, j) + (1 − X) ∗ P2(i, j)
+                    out[j][k][i]=x*img[j][k][i]+(1-x)*img2[j][k][i]
+        
+        cv2.imshow('Imagen final',out)
+        cv2.waitKey()
+        return(out)
+        #guardamos la imagen generada
+    else:
+        return(None)
         

@@ -4,11 +4,9 @@ import numpy as np
 from matplotlib import pyplot as plt 
 import math
 
-def op_div(img,img2):
+def op_blend(img,img2,x):
     if img is not None and img2 is not None:
         #mostramos las imagenes originales
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        img2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
         cv2.imshow('Imagen inicial 1',img)
         cv2.waitKey()
         cv2.imshow('Imagen inicial 2',img2)
@@ -17,19 +15,14 @@ def op_div(img,img2):
         #ajustamos el tamaño de la imagen 2 a la de la imagen 1
         img2=cv2.resize(img2, (img.shape[1], img.shape[0]))
 
-        mini=np.min(img)
-        maxi=np.max(img)
-        newmin=np.min(img2)
-        newmax=np.max(img2)
-
         #creamos una imagen en negro
         out=np.zeros(shape=img.shape,dtype=np.uint8)
 
-        
-        for j in range(img.shape[0]):
-            for k in range(img.shape[1]):
-                #out[j][k]=((img[j][k]-mini)*((newmax-newmin)/(maxi-mini)))+newmin
-                out[j][k]=int((img[j][k]/img2[j][k])*100)
+        for i in range(len(img[0][0])):
+            for j in range(img.shape[0]):
+                for k in range(img.shape[1]):
+                    #X ∗ P1(i, j) + (1 − X) ∗ P2(i, j)
+                    out[j][k][i]=x*img[j][k][i]+(1-x)*img2[j][k][i]
         
         cv2.imshow('Imagen final',out)
         cv2.waitKey()
@@ -38,15 +31,18 @@ def op_div(img,img2):
     else:
         return(None)
 
-def run_div(file1,file2):
+def run_blend(file1,file2,x):
     #Procesamos todos los elementos de la carpeta indicada
     img = cv2.imread(file1)
     img2=cv2.imread(file2)
-    out=op_div(img,img2)
+    out=op_blend(img,img2,x)
     if out is not None:
-        cv2.imwrite('./out2/out_div1.jpg',out)
-        print("Imagenes Divididas")
+        cv2.imwrite('./out2/out_blend'+str(x)+'.jpg',out)
+        print("Operacion Realizada")
     else:
         print("Imagenes no compatibles--")
 
-run_div('./input2/sub_10.jpg','./input2/sub_11.jpg') 
+run_blend('./input2/bld_10.jpg','./input2/bld_11.jpg',0.1)
+run_blend('./input2/bld_10.jpg','./input2/bld_11.jpg',0.25) 
+run_blend('./input2/bld_10.jpg','./input2/bld_11.jpg',0.5) 
+run_blend('./input2/bld_10.jpg','./input2/bld_11.jpg',0.9) 
