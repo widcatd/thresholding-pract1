@@ -15,30 +15,6 @@ def dec_to_bin(numero1,numero2):
     return bin1,bin2
 def bin_to_dec(t_cadena):
     return int(t_cadena,2)
-def op_not(pixel):
-    return (255-pixel)
-def op_and(pixel1,pixel2):
-    #convertimos a binario los pixeles
-    cadena1,cadena2=dec_to_bin(pixel1,pixel2)
-    temp_cadena=""
-    #realizamos la operacion and
-    for i in range(len(cadena1)):
-        if cadena1[i]=="1"and cadena2[i]=="1":
-            temp_cadena=temp_cadena+"1"
-        else:
-            temp_cadena=temp_cadena+"0"
-    return bin_to_dec(temp_cadena)
-def op_or(pixel1,pixel2):
-    #convertimos a binario los pixeles
-    cadena1,cadena2=dec_to_bin(pixel1,pixel2)
-    temp_cadena=""
-    #realizamos las operacion or
-    for i in range(len(cadena1)):
-        if cadena1[i]=="1"or cadena2[i]=="1":
-            temp_cadena=temp_cadena+"1"
-        else:
-            temp_cadena=temp_cadena+"0"
-    return bin_to_dec(temp_cadena)
 def op_xor(pixel1,pixel2):
     #convertimos a binario los pixeles
     cadena1,cadena2=dec_to_bin(pixel1,pixel2)
@@ -65,7 +41,7 @@ def op_binario(imname1,imname2,operacion):
         for i in range(len(img[0][0])):
             for j in range(img.shape[0]):
                 for k in range(img.shape[1]):
-                    out[j][k][i]=op_and((img2[j][k][i]),(img[j][k][i]))
+                    out[j][k][i]=op_xor((img2[j][k][i]),(img[j][k][i]))
         #mostramos la imagen resultante
         cv2.imshow('Imagen final',out)
         cv2.waitKey()
@@ -73,6 +49,6 @@ def op_binario(imname1,imname2,operacion):
     else:
         return(None)
 
-operacion="and"
+operacion="xor"
 out=op_binario('./input1/img1.jpeg','./input1/img2.jpeg',operacion)
 cv2.imwrite('./output/out_'+str(operacion)+'.jpeg',out)

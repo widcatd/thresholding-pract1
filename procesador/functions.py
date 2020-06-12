@@ -7,6 +7,12 @@ import math
 def pixel(lst):
     return((float(lst[0])+float(lst[1])+float(lst[2]))/3)
 
+def aux(imname):
+    img = cv2.imread(imname)
+    if img is not None:
+        return(img)
+    else:
+        return(None)
 
 def hist_eq(imname):
     img = cv2.imread(imname)
@@ -44,9 +50,11 @@ def hist_eq(imname):
 
         #return(out)
 
-        cv2.imwrite('./out_'+imname,out)
+        return(out)
+    else:
+        return(None)
 
-def contrast_str(imname):
+def contrast_str(imname,limi):
     img = cv2.imread(imname)
     if img is not None:
 
@@ -56,7 +64,7 @@ def contrast_str(imname):
             if h1[i]!=0:
                 h1_c.append(i)
         t=len(h1_c)
-        r=int(t/10)
+        r=int(t/limi)
         l1=h1_c[0+r]
         u1=h1_c[len(h1_c)-1-r]
         
@@ -104,7 +112,9 @@ def contrast_str(imname):
         
         #return(out)
 
-        cv2.imwrite('./out_'+imname,out)
+        return(out)
+    else:
+        return(None)
 
 def threshold(imname):
     img = cv2.imread(imname)
@@ -122,7 +132,9 @@ def threshold(imname):
                 if (pixel(img[i][j])<lim):
                     out[i][j]=img[i][j]
         
-        cv2.imwrite('./out_'+imname,out)
+        return(out)
+    else:
+        return(None)
 
 def op_log(imname,c):
     img = cv2.imread(imname)
@@ -139,7 +151,9 @@ def op_log(imname,c):
                     if vtmp>255:
                         vtmp=255
                     out[j][k][i]=vtmp
-        cv2.imwrite('./out_'+imname,out)
+        return(out)
+    else:
+        return(None)
         
 def op_exp(imname,b,c):
     img = cv2.imread(imname)
@@ -158,7 +172,9 @@ def op_exp(imname,b,c):
                         vtmp=0
                     out[j][k][i]=vtmp
 
-        cv2.imwrite('./out_'+imname,out)
+        return(out)
+    else:
+        return(None)
 
 def op_rtp(imname,c,r):
     img = cv2.imread(imname)
@@ -177,10 +193,14 @@ def op_rtp(imname,c,r):
                         vtmp=0
                     out[j][k][i]=vtmp
 
-        cv2.imwrite('./out_'+imname,out)
+        return(out)
+    else:
+        return(None)
 
 
-def op_sum(img,img2):
+def op_sum(imname1,imname2):
+    img=cv2.imread(imname1)
+    img2=cv2.imread(imname2)
     if img is not None and img2 is not None:
         #mostramos las imagenes originales
         cv2.imshow('Imagen inicial 1',img)
@@ -207,11 +227,11 @@ def op_sum(img,img2):
     else:
         return(None)
 
-def op_div(img,img2):
+def op_div(imname1,imname2):
+    img=cv2.imread(imname1)
+    img2=cv2.imread(imname2)
     if img is not None and img2 is not None:
         #mostramos las imagenes originales
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        img2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
         cv2.imshow('Imagen inicial 1',img)
         cv2.waitKey()
         cv2.imshow('Imagen inicial 2',img2)
@@ -224,16 +244,13 @@ def op_div(img,img2):
         maxi=np.max(img)
         newmin=np.min(img2)
         newmax=np.max(img2)
-
         #creamos una imagen en negro
         out=np.zeros(shape=img.shape,dtype=np.uint8)
 
-        
-        for j in range(img.shape[0]):
-            for k in range(img.shape[1]):
-                #out[j][k]=((img[j][k]-mini)*((newmax-newmin)/(maxi-mini)))+newmin
-                out[j][k]=int((img[j][k]/img2[j][k])*100)
-        
+        for i in range(len(img[0][0])):
+            for j in range(img.shape[0]):
+                for k in range(img.shape[1]):
+                    out[j][k][i]=int((img[j][k][i]/img2[j][k][i])*100)
         cv2.imshow('Imagen final',out)
         cv2.waitKey()
         return(out)
@@ -241,7 +258,9 @@ def op_div(img,img2):
     else:
         return(None)
 
-def op_blend(img,img2,x):
+def op_blend(imname1,imname2,x):
+    img=cv2.imread(imname1)
+    img2=cv2.imread(imname2)
     if img is not None and img2 is not None:
         #mostramos las imagenes originales
         cv2.imshow('Imagen inicial 1',img)
@@ -267,41 +286,9 @@ def op_blend(img,img2,x):
         #guardamos la imagen generada
     else:
         return(None)
-        
-def op_division(img,img2):
-    if img is not None and img2 is not None:
-        #mostramos las imagenes originales
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        img2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
-        cv2.imshow('Imagen inicial 1',img)
-        cv2.waitKey()
-        cv2.imshow('Imagen inicial 2',img2)
-        cv2.waitKey()
-        #sacamos los valores minimos y maximos
-        mini=np.min(img)
-        maxi=np.max(img)
-        newmin=np.min(img2)
-        newmax=np.max(img2)
-        
-        #ajustamos el tamaño de la imagen 2 a la de la imagen 1
-        img2=cv2.resize(img2, (img.shape[1], img.shape[0]))
 
-        #creamos una imagen en negro
-        out=np.zeros(shape=img.shape,dtype=np.uint8)
-        #creamos una constante
-        const=190
-        #aplicamos la suma en los 3 canales
-        for j in range(img.shape[0]):
-            for k in range(img.shape[1]):
-                out[j][k]=((((img[j][k]/img2[j][k])*const)-mini)*((newmax-newmin)/(maxi-mini)))+newmin
-        cv2.imshow('Imagen final',out)
-        cv2.waitKey()
-        return(out)
-        #guardamos la imagen generada
-    else:
-        return(None)
-
-def op_multi(img,c):
+def op_multi(imname,c):
+    img=cv2.imread(imname)
     if img is not None:
         #mostramos las imagenes originales
         cv2.imshow('Imagen inicial 1',img)
@@ -380,25 +367,30 @@ def op_xor(pixel1,pixel2):
             temp_cadena=temp_cadena+"0"
     return bin_to_dec(temp_cadena)
 
-def op_binario(img,img2,operacion):
+
+def op_binario(imname1,imname2,operacion):
+    img=cv2.imread(imname1)
+    img2=cv2.imread(imname2)
     if img is not None and img2 is not None:
         #mostramos las imagenes originales
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        img2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
         cv2.imshow('Imagen inicial 1',img)
         cv2.waitKey()
         cv2.imshow('Imagen inicial 2',img2)
         cv2.waitKey()
+
         out=np.zeros(shape=img2.shape,dtype=np.uint8)
         #aplicamos las operaciones binarias
-        for j in range(img.shape[0]):
-            for k in range(img.shape[1]):
-                if operacion=="and":
-                    out[j][k]=op_and((img2[j][k]),(img[j][k]))
-                if operacion=="or":
-                    out[j][k]=op_or((img2[j][k]),(img[j][k]))
-                if operacion=="xor":
-                    out[j][k]=op_xor((img2[j][k]),(img[j][k]))
+        for i in range(len(img[0][0])):
+            for j in range(img.shape[0]):
+                for k in range(img.shape[1]):
+                    if operacion=="and":
+                        out[j][k][i]=op_and((img2[j][k][i]),(img[j][k][i]))
+                    if operacion=="or":
+                        out[j][k][i]=op_or((img2[j][k][i]),(img[j][k][i]))
+                    if operacion=="xor":
+                        out[j][k][i]=op_xor((img2[j][k][i]),(img[j][k][i]))
+                    if operacion=="not":
+                        out[j][k][i]=op_not(img[j][k][i])
         #mostramos la imagen resultante
         cv2.imshow('Imagen final',out)
         cv2.waitKey()
