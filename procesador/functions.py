@@ -267,6 +267,7 @@ def op_blend(img,img2,x):
         #guardamos la imagen generada
     else:
         return(None)
+        
 def op_division(img,img2):
     if img is not None and img2 is not None:
         #mostramos las imagenes originales
@@ -299,6 +300,7 @@ def op_division(img,img2):
         #guardamos la imagen generada
     else:
         return(None)
+
 def op_multi(img,c):
     if img is not None:
         #mostramos las imagenes originales
@@ -324,6 +326,7 @@ def op_multi(img,c):
         #guardamos la imagen generada
     else:
         return(None)
+
 def dec_to_bin(numero1,numero2):
     #los 2 primeros valores no son parte del numero binario
     bin1=bin(numero1)[2:]
@@ -334,10 +337,13 @@ def dec_to_bin(numero1,numero2):
     while len(bin1)>len(bin2):
         bin2="0"+bin2
     return bin1,bin2
+
 def bin_to_dec(t_cadena):
     return int(t_cadena,2)
+
 def op_not(pixel):
     return (255-pixel)
+
 def op_and(pixel1,pixel2):
     #convertimos a binario los pixeles
     cadena1,cadena2=dec_to_bin(pixel1,pixel2)
@@ -349,6 +355,7 @@ def op_and(pixel1,pixel2):
         else:
             temp_cadena=temp_cadena+"0"
     return bin_to_dec(temp_cadena)
+
 def op_or(pixel1,pixel2):
     #convertimos a binario los pixeles
     cadena1,cadena2=dec_to_bin(pixel1,pixel2)
@@ -360,6 +367,7 @@ def op_or(pixel1,pixel2):
         else:
             temp_cadena=temp_cadena+"0"
     return bin_to_dec(temp_cadena)
+
 def op_xor(pixel1,pixel2):
     #convertimos a binario los pixeles
     cadena1,cadena2=dec_to_bin(pixel1,pixel2)
@@ -371,6 +379,7 @@ def op_xor(pixel1,pixel2):
         else:
             temp_cadena=temp_cadena+"0"
     return bin_to_dec(temp_cadena)
+
 def op_binario(img,img2,operacion):
     if img is not None and img2 is not None:
         #mostramos las imagenes originales
