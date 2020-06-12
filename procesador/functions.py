@@ -232,7 +232,7 @@ def op_div(imname1,imname2):
         for i in range(len(img[0][0])):
             for j in range(img.shape[0]):
                 for k in range(img.shape[1]):
-                    out[i][j][k]=int((img[i][j][k]/img2[i][j][k])*100)
+                    out[j][k][i]=int((img[j][k][i]/img2[j][k][i])*100)
         cv2.imshow('Imagen final',out)
         cv2.waitKey()
         return(out)
@@ -357,13 +357,13 @@ def op_binario(imname1,imname2,operacion):
             for j in range(img.shape[0]):
                 for k in range(img.shape[1]):
                     if operacion=="and":
-                        out[i][j][k]=op_and((img2[i][j][k]),(img[i][j][k]))
+                        out[j][k][i]=op_and((img2[j][k][i]),(img[j][k][i]))
                     if operacion=="or":
-                        out[i][j][k]=op_or((img2[i][j][k]),(img[i][j][k]))
+                        out[j][k][i]=op_or((img2[j][k][i]),(img[j][k][i]))
                     if operacion=="xor":
-                        out[i][j][k]=op_xor((img2[i][j][k]),(img[i][j][k]))
+                        out[j][k][i]=op_xor((img2[j][k][i]),(img[j][k][i]))
                     if operacion=="not":
-                        out[i][j][k]=op_not(img[i][j][k])
+                        out[j][k][i]=op_not(img[j][k][i])
         #mostramos la imagen resultante
         cv2.imshow('Imagen final',out)
         cv2.waitKey()
