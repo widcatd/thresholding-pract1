@@ -443,4 +443,3 @@ def op_binario(img,img2,operacion):
         return(out)
     else:
         return(None)
->>>>>>> 1bb425dc0b3a3e7e421786fb250f308a02b0f73a
