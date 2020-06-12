@@ -148,6 +148,17 @@ class CalcGridLayout(GridLayout):
 
     def f8(self):
         if self.ld1 and self.ld2:
+            sav(imgtmp,functions.op_sum(imgtmp,self.rt2))
+            self.ids.imgt.reload()
+            self.set_stat("Listo")
+
+        elif self.ld1 or self.ld2:
+            self.set_stat(ups2)
+        else:
+            self.set_stat(upsall)
+
+    def f9(self):
+        if self.ld1 and self.ld2:
             sav(imgtmp,functions.op_div(imgtmp,self.rt2))
             self.ids.imgt.reload()
             self.set_stat("Listo")
@@ -156,6 +167,93 @@ class CalcGridLayout(GridLayout):
             self.set_stat(ups2)
         else:
             self.set_stat(upsall)
+
+    def f10(self):
+        if self.ld1 and self.ld2:
+            vlu=self.ids.entry11.text
+            if (vlu=='' or vlu=='0') :
+                self.set_stat(upsf)
+            else:
+                sav(imgtmp,functions.op_blend(imgtmp,self.rt2,vlu))
+                self.ids.imgt.reload()
+                self.set_stat("Listo")
+
+        elif self.ld1 or self.ld2:
+            self.set_stat(ups2)
+        else:
+            self.set_stat(upsall)
+
+    def f11(self):
+        if self.ld1 and self.ld2:
+            sav(imgtmp,functions.op_binario(imgtmp,self.rt2,"and"))
+            self.ids.imgt.reload()
+            self.set_stat("Listo")
+
+        elif self.ld1 or self.ld2:
+            self.set_stat(ups2)
+        else:
+            self.set_stat(upsall)
+    
+    def f12(self):
+        if self.ld1:
+            vlu=self.ids.entry2.text
+            if vlu=='' or vlu=='0':
+                self.set_stat(upsf)
+            else:
+                sav(imgtmp,functions.op_multi(imgtmp,int(vlu)))
+                self.ids.imgt.reload()
+                self.set_stat("Listo")
+        else:
+            self.set_stat(upsall)
+    
+    def f13(self):
+        if self.ld1 and self.ld2:
+            sav(imgtmp,functions.op_binario(imgtmp,self.rt2,"or"))
+            self.ids.imgt.reload()
+            self.set_stat("Listo")
+
+        elif self.ld1 or self.ld2:
+            self.set_stat(ups2)
+        else:
+            self.set_stat(upsall)
+
+    def f14(self):
+        if self.ld1 and self.ld2:
+            sav(imgtmp,functions.op_binario(imgtmp,self.rt2,"xor"))
+            self.ids.imgt.reload()
+            self.set_stat("Listo")
+
+        elif self.ld1 or self.ld2:
+            self.set_stat(ups2)
+        else:
+            self.set_stat(upsall)
+
+    def f15(self):
+        if self.ld1 and self.ld2:
+            sav("./tmp/trr1.jpg",functions.op_binario(imgtmp,self.rt2,"not"))
+            sav("./tmp/trr2.jpg",functions.op_binario(self.rt2,imgtmp,"not"))
+            sav(imgtmp,functions.op_binario("./tmp/trr1.jpg","./tmp/trr2.jpg","and"))
+            self.ids.imgt.reload()
+            self.set_stat("Listo")
+
+        elif self.ld1 or self.ld2:
+            self.set_stat(ups2)
+        else:
+            self.set_stat(upsall)
+
+    def f16(self):
+        if self.ld1 and self.ld2:
+            sav("./tmp/trr1.jpg",functions.op_binario(imgtmp,self.rt2,"not"))
+            sav("./tmp/trr2.jpg",functions.op_binario(self.rt2,imgtmp,"not"))
+            sav(imgtmp,functions.op_binario("./tmp/trr1.jpg","./tmp/trr2.jpg","or"))
+            self.ids.imgt.reload()
+            self.set_stat("Listo")
+
+        elif self.ld1 or self.ld2:
+            self.set_stat(ups2)
+        else:
+            self.set_stat(upsall)
+
 
     
     
