@@ -62,11 +62,15 @@ class CalcGridLayout(GridLayout):
         if self.ld1:
             sav(out,functions.aux(imgtmp))
             self.set_stat("Imagen guardada correctamente")
+            self.ids.out.source=out
+            self.ids.out.reload()
+
         else:
             self.set_stat("No hay imagenes para guardar")
 
     def load(self):
         sav(imgtmp,functions.aux(out))
+        self.ids.imgt.reload()
         self.set_stat("Imagen cargada correctamente")
 
     def f1(self):
@@ -254,9 +258,6 @@ class CalcGridLayout(GridLayout):
         else:
             self.set_stat(upsall)
 
-
-    
-    
 class DragDropApp(App):
     def build(self):
         return CalcGridLayout()
