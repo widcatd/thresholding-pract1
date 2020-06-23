@@ -202,12 +202,6 @@ def op_sum(imname1,imname2):
     img=cv2.imread(imname1)
     img2=cv2.imread(imname2)
     if img is not None and img2 is not None:
-        #mostramos las imagenes originales
-        cv2.imshow('Imagen inicial 1',img)
-        cv2.waitKey()
-        cv2.imshow('Imagen inicial 2',img2)
-        cv2.waitKey()
-
         #ajustamos el tamaño de la imagen 2 a la de la imagen 1
         img2=cv2.resize(img2, (img.shape[1], img.shape[0]))
 
@@ -220,8 +214,6 @@ def op_sum(imname1,imname2):
                 for k in range(img.shape[1]):
                     out[j][k][i]=int(img[j][k][i]/2)+int(img2[j][k][i]/2)
 
-        cv2.imshow('Imagen final',out)
-        cv2.waitKey()
         return(out)
         #guardamos la imagen generada
     else:
@@ -231,12 +223,6 @@ def op_div(imname1,imname2):
     img=cv2.imread(imname1)
     img2=cv2.imread(imname2)
     if img is not None and img2 is not None:
-        #mostramos las imagenes originales
-        cv2.imshow('Imagen inicial 1',img)
-        cv2.waitKey()
-        cv2.imshow('Imagen inicial 2',img2)
-        cv2.waitKey()
-
         #ajustamos el tamaño de la imagen 2 a la de la imagen 1
         img2=cv2.resize(img2, (img.shape[1], img.shape[0]))
 
@@ -251,8 +237,7 @@ def op_div(imname1,imname2):
             for j in range(img.shape[0]):
                 for k in range(img.shape[1]):
                     out[j][k][i]=int((img[j][k][i]/img2[j][k][i])*100)
-        cv2.imshow('Imagen final',out)
-        cv2.waitKey()
+
         return(out)
         #guardamos la imagen generada
     else:
@@ -263,10 +248,6 @@ def op_blend(imname1,imname2,x):
     img2=cv2.imread(imname2)
     if img is not None and img2 is not None:
         #mostramos las imagenes originales
-        cv2.imshow('Imagen inicial 1',img)
-        cv2.waitKey()
-        cv2.imshow('Imagen inicial 2',img2)
-        cv2.waitKey()
 
         #ajustamos el tamaño de la imagen 2 a la de la imagen 1
         img2=cv2.resize(img2, (img.shape[1], img.shape[0]))
@@ -280,8 +261,6 @@ def op_blend(imname1,imname2,x):
                     #X ∗ P1(i, j) + (1 − X) ∗ P2(i, j)
                     out[j][k][i]=x*img[j][k][i]+(1-x)*img2[j][k][i]
         
-        cv2.imshow('Imagen final',out)
-        cv2.waitKey()
         return(out)
         #guardamos la imagen generada
     else:
@@ -290,11 +269,7 @@ def op_blend(imname1,imname2,x):
 def op_multi(imname,c):
     img=cv2.imread(imname)
     if img is not None:
-        #mostramos las imagenes originales
-        cv2.imshow('Imagen inicial 1',img)
-        cv2.waitKey()
-        #ajustamos el tamaño de la imagen 2 a la de la imagen 1
-        
+
         #creamos una imagen en negro
         out=np.zeros(shape=img.shape,dtype=np.uint8)
 
@@ -307,8 +282,6 @@ def op_multi(imname,c):
                     else:
                         out[j][k][i]= int(img[j][k][i]*c)
 
-        cv2.imshow('Imagen final',out)
-        cv2.waitKey()
         return(out)
         #guardamos la imagen generada
     else:
@@ -373,10 +346,7 @@ def op_binario(imname1,imname2,operacion):
     img2=cv2.imread(imname2)
     if img is not None and img2 is not None:
         #mostramos las imagenes originales
-        cv2.imshow('Imagen inicial 1',img)
-        cv2.waitKey()
-        cv2.imshow('Imagen inicial 2',img2)
-        cv2.waitKey()
+
 
         out=np.zeros(shape=img2.shape,dtype=np.uint8)
         #aplicamos las operaciones binarias
@@ -392,8 +362,7 @@ def op_binario(imname1,imname2,operacion):
                     if operacion=="not":
                         out[j][k][i]=op_not(img[j][k][i])
         #mostramos la imagen resultante
-        cv2.imshow('Imagen final',out)
-        cv2.waitKey()
+
         return(out)
     else:
         return(None)

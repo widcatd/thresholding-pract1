@@ -107,7 +107,7 @@ class CalcGridLayout(GridLayout):
             if vlu=='' or vlu=='0':
                 self.set_stat(upsf)
             else:
-                sav(imgtmp,functions.op_log(imgtmp,int(vlu)))
+                sav(imgtmp,functions.op_log(imgtmp,float(vlu)))
                 self.ids.imgt.reload()
                 self.set_stat("Listo")
         else:
@@ -120,7 +120,7 @@ class CalcGridLayout(GridLayout):
             if (vlu=='' or vlu=='0') or (vlu2=='' or vlu2=='0') :
                 self.set_stat(upsf)
             else:
-                sav(imgtmp,functions.op_exp(imgtmp,int(vlu),int(vlu2)))
+                sav(imgtmp,functions.op_exp(imgtmp,float(vlu),float(vlu2)))
                 self.ids.imgt.reload()
                 self.set_stat("Listo")
         else:
@@ -133,7 +133,7 @@ class CalcGridLayout(GridLayout):
             if (vlu=='' or vlu=='0') or (vlu2=='' or vlu2=='0') :
                 self.set_stat(upsf)
             else:
-                sav(imgtmp,functions.op_rtp(imgtmp,int(vlu),int(vlu2)))
+                sav(imgtmp,functions.op_rtp(imgtmp,float(vlu),float(vlu2)))
                 self.ids.imgt.reload()
                 self.set_stat("Listo")
         else:
@@ -178,7 +178,7 @@ class CalcGridLayout(GridLayout):
             if (vlu=='' or vlu=='0') :
                 self.set_stat(upsf)
             else:
-                sav(imgtmp,functions.op_blend(imgtmp,self.rt2,vlu))
+                sav(imgtmp,functions.op_blend(imgtmp,self.rt2,float(vlu)))
                 self.ids.imgt.reload()
                 self.set_stat("Listo")
 
@@ -204,7 +204,7 @@ class CalcGridLayout(GridLayout):
             if vlu=='' or vlu=='0':
                 self.set_stat(upsf)
             else:
-                sav(imgtmp,functions.op_multi(imgtmp,int(vlu)))
+                sav(imgtmp,functions.op_multi(imgtmp,float(vlu)))
                 self.ids.imgt.reload()
                 self.set_stat("Listo")
         else:
