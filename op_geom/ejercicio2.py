@@ -2,7 +2,7 @@ import cv2
 import os
 import numpy as np
 import math
-
+'''
 def ces_affine(img,matrix,tam):
     A=matrix[0:2,0:2]
     B=matrix[0:2,2:3]
@@ -21,13 +21,40 @@ def ces_affine(img,matrix,tam):
                     out[j][k][f]=img[x][y][f]
     return (out)
 
+def ces_affine(img,matrix,tam):
+    A=matrix[0:2,0:2]
+    B=matrix[0:2,2:3]
+    out=np.zeros(shape=tam,dtype=np.uint8)
+    for f in range(len(img[0][0])):
+        for j in range(img.shape[0]):
+            for k in range(img.shape[1]):
+                tmp=(np.dot(A,np.array([[j],[k]])))+B
+                x=math.floor(tmp[0][0])
+                y=math.floor(tmp[1][0])
+                if(not((x>=tam[0] or x<0)or(y>=tam[1] or y<0))):
+                    out[x][y][f]=img[j][k][f]
+    return (out)
+'''
+
+def ces_affine(img,matrix,tam):
+    A=matrix[0:2,0:2]
+    B=matrix[0:2,2:3]
+    out=np.zeros(shape=tam,dtype=np.uint8)
+    for f in range(len(img[0][0])):
+        for j in range(img.shape[0]):
+            for k in range(img.shape[1]):
+                tmp=(np.dot(A,np.array([[j],[k]])))+B
+                x=math.floor(tmp[0][0])
+                y=math.floor(tmp[1][0])
+                if(not((x>=tam[0] or x<0)or(y>=tam[1] or y<0))):
+                    out[x][y][f]=img[j][k][f]
+    return (out)
 
 def op_rotar(img,angle):
     if img is not None:
         filas, cols = img.shape[0], img.shape[1]
-        M = cv2.getRotationMatrix2D((int(filas/2), int(cols/2)), angle, 1)
-        #M = np.float32([[math.cos(angle),math.sin(angle),((1-math.cos(angle))*2-math.sin(angle)*2)],[-math.sin(angle),math.cos(angle),(math.sin(angle)*2+(1-math.sin(angle)*2))]])
-        out=ces_affine(img,M,(cols,filas,3))
+        M = cv2.getRotationMatrix2D((cols/2,filas/2),angle,1)
+        out=ces_affine(img,M,(filas,cols,3))
         return(out)
     else:
         return(None)
@@ -35,7 +62,7 @@ def op_rotar(img,angle):
 def op_escala(img,alto,ancho):
     if img is not None:
         filas, cols = img.shape[0], img.shape[1]
-        M = np.float32([[alto/filas,0,0],[0,ancho/cols,0]])
+        M = np.float32([[ancho/cols,0,0],[0,alto/filas,0]])
         out=ces_affine(img,M,(ancho,alto,3))
         return(out)
     else:

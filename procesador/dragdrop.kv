@@ -232,3 +232,44 @@
             text: "Aplicar Op. NOR \n2 imagenes"
             on_press: root.f16()
             
+    BoxLayout:
+        size_hint: 1, .35
+        spacing: 10
+        
+        BoxLayout:
+            size_hint: 2, 1
+            canvas:
+                Color:
+                    rgba: 0.2,0.2,0.2,1
+                Line:
+                    rectangle: self.x, self.y, self.width+1, self.height+1
+
+            TextInput:
+                id: entry15
+                font_size: 20
+                multiline: False
+                hint_text: "Angulo"
+            CustButton:
+                text: "Rotar"
+                on_press: root.f12()
+
+        BoxLayout:
+            size_hint: 2, 1
+            canvas:
+                Color:
+                    rgba: 0.2,0.2,0.2,1
+                Line:
+                    rectangle: self.x, self.y, self.width+1, self.height+1
+
+            TextInput:
+                id: entry11
+                font_size: 20
+                multiline: False
+                hint_text: "Valor X"
+            CustButton:
+                text: "Aplicar Blending \n2 imagenes"
+                on_press: root.f10()
+        
+        CustButton:
+            text: "Aplicar Division \n2 imagenes"
+            on_press: root.f9()

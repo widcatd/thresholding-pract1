@@ -6,8 +6,7 @@ import math
 def op_rotar(img,angle):
     if img is not None:
         filas, cols = img.shape[0], img.shape[1]
-        M = cv2.getRotationMatrix2D((int(filas/2), int(cols/2)), angle, 1)
-        #M = np.float32([[math.cos(angle),math.sin(angle),((1-math.cos(angle))*2-math.sin(angle)*2)],[-math.sin(angle),math.cos(angle),(math.sin(angle)*2+(1-math.sin(angle)*2))]])
+        M = cv2.getRotationMatrix2D((cols/2,filas/2),angle,1)
         out=cv2.warpAffine(img,M,(cols,filas))
         return(out)
     else:

@@ -366,3 +366,44 @@ def op_binario(imname1,imname2,operacion):
         return(out)
     else:
         return(None)
+
+
+def op_rotar(imname,angle):
+    img=cv2.imread(imname)
+    if img is not None:
+        filas, cols = img.shape[0], img.shape[1]
+        M = cv2.getRotationMatrix2D((cols/2,filas/2),angle,1)
+        out=cv2.warpAffine(img,M,(cols,filas))
+        return(out)
+    else:
+        return(None)
+
+def op_escala(imname,alto,ancho):
+    img=cv2.imread(imname)
+    if img is not None:
+        filas, cols = img.shape[0], img.shape[1]
+        M = np.float32([[ancho/cols ,0,0],[0,alto/filas,0]])
+        out=cv2.warpAffine(img,M,(ancho,alto))
+        return(out)
+    else:
+        return(None)
+
+def op_trasl(imname,tx,ty):
+    img=cv2.imread(imname)
+    if img is not None:
+        filas, cols = img.shape[0], img.shape[1]
+        M = np.float32([[1,0,tx],[0,1,ty]])
+        out=cv2.warpAffine(img,M,(cols,filas))
+        return(out)
+    else:
+        return(None)
+
+def op_shear(imname,shx,shy):
+    img=cv2.imread(imname)
+    if img is not None:
+        filas, cols = img.shape[0], img.shape[1]
+        M = np.float32([[1,shy,0],[shx,1,0]])
+        out=cv2.warpAffine(img,M,(filas,cols))
+        return(out)
+    else:
+        return(None)
