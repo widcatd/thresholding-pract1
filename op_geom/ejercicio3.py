@@ -48,7 +48,7 @@ def run_exp(file1):
     escalar=2
     out=cofcof(img,escalar)
     if out is not None:
-        cv2.imwrite('./output/out_meme1.jpg',out)
+        cv2.imwrite('./out/out_meme1.jpg',out)
         print("Imagenes Sumadas")
     else:
         print("Imagenes no compatibles--")
