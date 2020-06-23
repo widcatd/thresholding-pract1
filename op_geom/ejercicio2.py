@@ -35,7 +35,7 @@ def op_rotar(img,angle):
 def op_escala(img,alto,ancho):
     if img is not None:
         filas, cols = img.shape[0], img.shape[1]
-        M = np.float32([[ancho,0,0],[0,alto,0]])
+        M = np.float32([[alto/filas,0,0],[0,ancho/cols,0]])
         out=ces_affine(img,M,(ancho,alto,3))
         return(out)
     else:
