@@ -2,39 +2,6 @@ import cv2
 import os
 import numpy as np
 import math
-'''
-def ces_affine(img,matrix,tam):
-    A=matrix[0:2,0:2]
-    B=matrix[0:2,2:3]
-    out=np.zeros(shape=tam,dtype=np.uint8)
-    for f in range(len(img[0][0])):
-        for j in range(tam[0]):
-            for k in range(tam[1]):
-                tmp=(np.dot(A,np.array([[j],[k]])))+B
-                x=int(tmp[0][0])
-                y=int(tmp[1][0])
-                if(x<0 or x>=img.shape[0]):
-                    out[j][k][f]=0
-                elif(y<0 or y>=img.shape[1]):
-                    out[j][k][f]=0
-                else:
-                    out[j][k][f]=img[x][y][f]
-    return (out)
-
-def ces_affine(img,matrix,tam):
-    A=matrix[0:2,0:2]
-    B=matrix[0:2,2:3]
-    out=np.zeros(shape=tam,dtype=np.uint8)
-    for f in range(len(img[0][0])):
-        for j in range(img.shape[0]):
-            for k in range(img.shape[1]):
-                tmp=(np.dot(A,np.array([[j],[k]])))+B
-                x=math.floor(tmp[0][0])
-                y=math.floor(tmp[1][0])
-                if(not((x>=tam[0] or x<0)or(y>=tam[1] or y<0))):
-                    out[x][y][f]=img[j][k][f]
-    return (out)
-'''
 
 def ces_affine(img,matrix,tam):
     A=matrix[0:2,0:2]
@@ -53,7 +20,7 @@ def ces_affine(img,matrix,tam):
 def op_rotar(img,angle):
     if img is not None:
         filas, cols = img.shape[0], img.shape[1]
-        M = cv2.getRotationMatrix2D((cols/2,filas/2),angle,1)
+        M = cv2.getRotationMatrix2D((cols/2,filas/2),-angle,1)
         out=ces_affine(img,M,(filas,cols,3))
         return(out)
     else:
@@ -72,7 +39,7 @@ def op_trasl(img,tx,ty):
     if img is not None:
         filas, cols = img.shape[0], img.shape[1]
         M = np.float32([[1,0,tx],[0,1,ty]])
-        out=ces_affine(img,M,(cols,filas,3))
+        out=ces_affine(img,M,(filas,cols,3))
         return(out)
     else:
         return(None)
@@ -124,7 +91,7 @@ def run_shear(folder,shx,shy):
             print("Imagen Transformada")
 
 if __name__ == "__main__":
-    run_rot('./input',90)
+    run_rot('./input',45)
     run_escal('./input',200,200)
     run_trasl('./input',50,50)
     run_shear('./input',0.5,0.5)

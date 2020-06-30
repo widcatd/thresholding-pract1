@@ -34,7 +34,7 @@ def op_shear(img,shx,shy):
     if img is not None:
         filas, cols = img.shape[0], img.shape[1]
         M = np.float32([[1,shy,0],[shx,1,0]])
-        out=cv2.warpAffine(img,M,(filas,cols))
+        out=cv2.warpAffine(img,M,(cols,filas))
         return(out)
     else:
         return(None)
