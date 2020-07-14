@@ -27,4 +27,4 @@ def run_rot(folder,angle):
             print("Imagen Transformada")
 
 if __name__ == "__main__":
-    run_rot('./input',45)
+    run_rot('./input',90)
