@@ -118,6 +118,8 @@ class MainApp(MDApp):
         self.root = Builder.load_string(root_kv)
         self.root.ids.u_l.x=0
         self.root.ids.u_l.y=0
+        self.root.ids.bott.bind(on_press=self.f1)
+        #self.root.ids.bott.on_press=self.f1()
         
     
     def _on_file_drop(self, window, file_path):
@@ -149,7 +151,7 @@ class MainApp(MDApp):
         self.root.ids.d_r.x=int(l[0])
         self.root.ids.d_r.y=int(l[1])
 
-    def f1(self):
+    def f1(self,instance):
         a=functions.puntos(self.filePath)
         temporal=np.array(a)
         img=functions.aux(self.filePath)
