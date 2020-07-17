@@ -1,267 +1,167 @@
-import kivy
-from kivy.app import App
-from kivy.uix.gridlayout import GridLayout
-from kivy.uix.button import Button
 from kivy.core.window import Window
+from kivy.uix.label import Label
 from kivy.properties import StringProperty
+from kivy.lang import Builder
+from kivymd.app import MDApp
+from kivy.uix.behaviors import DragBehavior
 import functions
 from cv2 import imwrite as sav
+import numpy as np
 
-Window.clearcolor = (0.5, 0.5, 0.5, 1)
+root_kv = '''
+<CustButton@Button>:
+    text_size: self.size
+    halign: 'center'
+    valign: 'middle'
+<DragLabel>:
+    drag_rectangle: self.x, self.y, self.width*2, self.height*2
+    drag_timeout: 10000000
+    drag_distance: 0
 
-ready="<-- Elegir Slot donde Cargar -->"
-ok="Imagen cargada"
-ups="No hay imagenes para cargar"
-upsall="No hay imagenes cargadas"
-ups2="Falta cargar imagen 2"
-upsf="Valores invalidos"
+BoxLayout:
+    orientation:'vertical'
 
-imgtmp="./tmp/tmp.jpg"
-out="./tmp/out.jpg"
+    MDToolbar:
+        title: 'Ajustador de Imágenes'
+        md_bg_color: .2, .2, .2, 1
+        specific_text_color: 1, 1, 1, 1
 
-class CalcGridLayout(GridLayout):
+    MDBottomNavigation:
+        panel_color: .2, .2, .2, 1
+
+        MDBottomNavigationItem:
+            name: 'screen 1'
+            text: 'Imagen de entrada'
+            icon: 'file-import'
+
+            MDLabel:
+                halign: 'center'
+                Image:
+                    size: 500,500
+                    id: img0
+
+        MDBottomNavigationItem:
+            name: 'screen 2'
+            text: 'Transformacion'
+            icon: 'file-eye'
+
+            MDLabel:
+                orientation:'vertical'
+                align: 'center'
+                BoxLayout:
+                    size: 500,500
+                    Image:
+                        size: 500,500
+                        id: img
+                        DragLabel:
+                            id:u_l
+                            text: '+'
+                        DragLabel:
+                            id:u_r
+                            size_hint: 1, 1
+                            text: '+'
+                        DragLabel:
+                            id:d_l
+                            size_hint: 1, 1
+                            text: '+'
+                        DragLabel:
+                            id:d_r
+                            size_hint: 1, 1
+                            text: '+'
+                CustButton:
+                    id:bott
+                    text: "Transformar"
+                    on_press: 
+
+
+        MDBottomNavigationItem:
+            name: 'screen 3'
+            text: 'Salida'
+            icon: 'file-export'       
+
+            MDLabel:
+                BoxLayout:
+                    size: 500,500
+                    orientation:'vertical'
+                    spacing: 10
+                    rows: 3
+                    BoxLayout:
+                        orientation:'horizontal'
+                        Image:
+                            id: imgtmp
+                        Image:
+                            id: imgfn
+                    BoxLayout:
+                        size_hint: 1, .3
+                        CustButton:
+                            text: "Aplicar Histogram Equalitation"
+
+                        CustButton:
+                            text: "Aplicar Contrast Stretching"
+'''
+class DragLabel(DragBehavior, Label):
+    pass
+
+class MainApp(MDApp):
     filePath = StringProperty('')
-
     def __init__(self, **kwargs):
-        super(CalcGridLayout, self).__init__(**kwargs)
+        self.title = "Transformador"
+        self.theme_cls.theme_style = "Dark"
+        self.theme_cls.primary_palette = "DeepPurple"
+        self.filePath=""
+        self.cont=1
         Window.bind(on_dropfile=self._on_file_drop)
-        self.status="Iniciado correctamente"
-        self.ids.status.text=self.status
-        self.ids.status.texture_update()
-        self.ld1=False
-        self.rt2=''
-        self.ld2=False
-
-    def set_stat(self,strr):
-        self.ids.status.text=strr
-        self.ids.status.texture_update()
+        super().__init__(**kwargs)
 
 
+    def build(self):
+        self.root = Builder.load_string(root_kv)
+        self.root.ids.u_l.x=0
+        self.root.ids.u_l.y=0
+        
+    
     def _on_file_drop(self, window, file_path):
         print(file_path)
         self.filePath = file_path.decode("utf-8")
-        self.set_stat(ready)
-        
-    def load1(self):
-        self.ids.img.source = self.filePath
-        self.ids.img.reload()
-        sav(imgtmp,functions.aux(self.filePath))
-        self.ids.imgt.source=imgtmp
-        self.ids.imgt.reload()
-        self.ld1=True
-        self.set_stat(ok)
+        self.root.ids.img0.source = self.filePath
+        self.root.ids.img0.reload()
+        self.root.ids.img.source = self.filePath
+        self.root.ids.img.reload()
+        rec=functions.puntos(self.filePath)
+        self.act_extr(rec)
+        self.cont+=1
+        #self.root.switch_tab(self, "screen1")
 
-    def load2(self):
-        self.ids.img2.source = self.filePath
-        self.rt2=self.filePath
-        self.ids.img2.reload()
-        self.ld2=True
-        self.set_stat(ok)
-
-    def save(self):
-        if self.ld1:
-            sav(out,functions.aux(imgtmp))
-            self.set_stat("Imagen guardada correctamente")
-            self.ids.out.source=out
-            self.ids.out.reload()
-
-        else:
-            self.set_stat("No hay imagenes para guardar")
-
-    def load(self):
-        sav(imgtmp,functions.aux(out))
-        self.ids.imgt.reload()
-        self.set_stat("Imagen cargada correctamente")
+    def act_extr(self,points):
+        w,h=functions.get_dim(self.filePath)
+        l=functions.transform_in(points[0][0],points[0][1],w,h,500,500) #(0,0,900,450,500,500) =0,125
+        #self.root.ids.u_l.x=0
+        #self.root.ids.u_l.y=0
+        self.root.ids.u_l.x=int(l[0])
+        self.root.ids.u_l.y=int(l[1])
+        l=functions.transform_in(points[1][0],points[1][1],w,h,500,500)
+        self.root.ids.u_r.x=int(l[0])
+        self.root.ids.u_r.y=int(l[1])
+        l=functions.transform_in(points[2][0],points[2][1],w,h,500,500)
+        self.root.ids.d_l.x=int(l[0])
+        self.root.ids.d_l.y=int(l[1])
+        l=functions.transform_in(points[3][0],points[3][1],w,h,500,500)
+        self.root.ids.d_r.x=int(l[0])
+        self.root.ids.d_r.y=int(l[1])
 
     def f1(self):
-        if self.ld1:
-            sav(imgtmp,functions.hist_eq(imgtmp))
-            self.ids.imgt.reload()
-            self.set_stat("Listo")
-        else:
-            self.set_stat(upsall)
-        
+        a=functions.puntos(self.filePath)
+        temporal=np.array(a)
+        img=functions.aux(self.filePath)
+        b=functions.four_point_transform(img,temporal)
+        sav("./tmp/process.jpg",b)
+        self.root.ids.imgtmp.source = "./tmp/process.jpg"
+        self.root.ids.imgtmp.reload()
+
     def f2(self):
-        if self.ld1:
-            vlu=self.ids.entry.text
-            if vlu=='' or vlu=='0':
-                self.set_stat(upsf)
-            else:
-                sav(imgtmp,functions.contrast_str(imgtmp,int(vlu)))
-                self.ids.imgt.reload()
-                self.set_stat("Listo")
-        else:
-            self.set_stat(upsall)
+        sav("./out/"+str(self.cont)+".jpg",functions.aux("./tmp/process.jpg"))
 
-    def f3(self):
-        if self.ld1:
-            sav(imgtmp,functions.threshold(imgtmp))
-            self.ids.imgt.reload()
-            self.set_stat("Listo")
-        else:
-            self.set_stat(upsall)
-
-    def f4(self):
-        if self.ld1:
-            vlu=self.ids.entry2.text
-            if vlu=='' or vlu=='0':
-                self.set_stat(upsf)
-            else:
-                sav(imgtmp,functions.op_log(imgtmp,float(vlu)))
-                self.ids.imgt.reload()
-                self.set_stat("Listo")
-        else:
-            self.set_stat(upsall)
-
-    def f5(self):
-        if self.ld1:
-            vlu=self.ids.entry3.text
-            vlu2=self.ids.entry4.text
-            if (vlu=='' or vlu=='0') or (vlu2=='' or vlu2=='0') :
-                self.set_stat(upsf)
-            else:
-                sav(imgtmp,functions.op_exp(imgtmp,float(vlu),float(vlu2)))
-                self.ids.imgt.reload()
-                self.set_stat("Listo")
-        else:
-            self.set_stat(upsall)
-
-    def f6(self):
-        if self.ld1:
-            vlu=self.ids.entry5.text
-            vlu2=self.ids.entry6.text
-            if (vlu=='' or vlu=='0') or (vlu2=='' or vlu2=='0') :
-                self.set_stat(upsf)
-            else:
-                sav(imgtmp,functions.op_rtp(imgtmp,float(vlu),float(vlu2)))
-                self.ids.imgt.reload()
-                self.set_stat("Listo")
-        else:
-            self.set_stat(upsall)
-
-    def f7(self):
-        if self.ld1 and self.ld2:
-            sav(imgtmp,functions.op_sum(imgtmp,self.rt2))
-            self.ids.imgt.reload()
-            self.set_stat("Listo")
-
-        elif self.ld1 or self.ld2:
-            self.set_stat(ups2)
-        else:
-            self.set_stat(upsall)
-
-    def f8(self):
-        if self.ld1 and self.ld2:
-            sav(imgtmp,functions.op_sum(imgtmp,self.rt2))
-            self.ids.imgt.reload()
-            self.set_stat("Listo")
-
-        elif self.ld1 or self.ld2:
-            self.set_stat(ups2)
-        else:
-            self.set_stat(upsall)
-
-    def f9(self):
-        if self.ld1 and self.ld2:
-            sav(imgtmp,functions.op_div(imgtmp,self.rt2))
-            self.ids.imgt.reload()
-            self.set_stat("Listo")
-
-        elif self.ld1 or self.ld2:
-            self.set_stat(ups2)
-        else:
-            self.set_stat(upsall)
-
-    def f10(self):
-        if self.ld1 and self.ld2:
-            vlu=self.ids.entry11.text
-            if (vlu=='' or vlu=='0') :
-                self.set_stat(upsf)
-            else:
-                sav(imgtmp,functions.op_blend(imgtmp,self.rt2,float(vlu)))
-                self.ids.imgt.reload()
-                self.set_stat("Listo")
-
-        elif self.ld1 or self.ld2:
-            self.set_stat(ups2)
-        else:
-            self.set_stat(upsall)
-
-    def f11(self):
-        if self.ld1 and self.ld2:
-            sav(imgtmp,functions.op_binario(imgtmp,self.rt2,"and"))
-            self.ids.imgt.reload()
-            self.set_stat("Listo")
-
-        elif self.ld1 or self.ld2:
-            self.set_stat(ups2)
-        else:
-            self.set_stat(upsall)
-    
-    def f12(self):
-        if self.ld1:
-            vlu=self.ids.entry2.text
-            if vlu=='' or vlu=='0':
-                self.set_stat(upsf)
-            else:
-                sav(imgtmp,functions.op_multi(imgtmp,float(vlu)))
-                self.ids.imgt.reload()
-                self.set_stat("Listo")
-        else:
-            self.set_stat(upsall)
-    
-    def f13(self):
-        if self.ld1 and self.ld2:
-            sav(imgtmp,functions.op_binario(imgtmp,self.rt2,"or"))
-            self.ids.imgt.reload()
-            self.set_stat("Listo")
-
-        elif self.ld1 or self.ld2:
-            self.set_stat(ups2)
-        else:
-            self.set_stat(upsall)
-
-    def f14(self):
-        if self.ld1 and self.ld2:
-            sav(imgtmp,functions.op_binario(imgtmp,self.rt2,"xor"))
-            self.ids.imgt.reload()
-            self.set_stat("Listo")
-
-        elif self.ld1 or self.ld2:
-            self.set_stat(ups2)
-        else:
-            self.set_stat(upsall)
-
-    def f15(self):
-        if self.ld1 and self.ld2:
-            sav("./tmp/trr1.jpg",functions.op_binario(imgtmp,self.rt2,"not"))
-            sav("./tmp/trr2.jpg",functions.op_binario(self.rt2,imgtmp,"not"))
-            sav(imgtmp,functions.op_binario("./tmp/trr1.jpg","./tmp/trr2.jpg","and"))
-            self.ids.imgt.reload()
-            self.set_stat("Listo")
-
-        elif self.ld1 or self.ld2:
-            self.set_stat(ups2)
-        else:
-            self.set_stat(upsall)
-
-    def f16(self):
-        if self.ld1 and self.ld2:
-            sav("./tmp/trr1.jpg",functions.op_binario(imgtmp,self.rt2,"not"))
-            sav("./tmp/trr2.jpg",functions.op_binario(self.rt2,imgtmp,"not"))
-            sav(imgtmp,functions.op_binario("./tmp/trr1.jpg","./tmp/trr2.jpg","or"))
-            self.ids.imgt.reload()
-            self.set_stat("Listo")
-
-        elif self.ld1 or self.ld2:
-            self.set_stat(ups2)
-        else:
-            self.set_stat(upsall)
-
-class DragDropApp(App):
-    def build(self):
-        return CalcGridLayout()
 
 
 if __name__ == "__main__":
-    DragDropApp().run()
+    MainApp().run()
