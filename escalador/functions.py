@@ -90,28 +90,27 @@ def get_PerspectiveTransform(origen, destino):
 	M[2, 2] = 1.
 	return M
 def warpperspective_(imagen, matriz, tam_salida):
-	out = np.ndarray((tam_salida[1], tam_salida[0], 3), dtype=float)
+	out = np.ndarray((tam_salida[1], tam_salida[0], 3), dtype='float64')
 	filas, columnas = (tam_salida[0], tam_salida[1])
 	for k in range(filas):
 		for i in range(columnas):
 			out[i, k] = (255, 255, 255)
-	matriz_in = np.ndarray((2, 1), dtype=float)
-	valores = np.ndarray((2, 1), dtype=float)
+	b_t = np.ndarray((2, 1), dtype='float64')
+	valores = np.ndarray((2, 1), dtype='float64')
 	for x in range(1, filas):
 		for y in range(1, columnas):
-		#temp_matriz=matriz.copy()
-			temp_matriz = np.copy(matriz)
-			temp_matriz[0, :] = temp_matriz[0, :] / float(x)
+			temp_matriz = matriz.copy()
+			temp_matriz[0, :] = temp_matriz[0, :] /float(x)
 			temp_matriz[0, :2] = temp_matriz[0, :2] - temp_matriz[2, :2]
-			temp_matriz[1, :] = temp_matriz[1, :] / float(y)
+			temp_matriz[1, :] = temp_matriz[1, :] /float(y)
 			temp_matriz[1, :2] = temp_matriz[1, :2] - temp_matriz[2, :2]
-			matriz_in[0, 0] = temp_matriz[2, 2] - temp_matriz[0, 2]
-			matriz_in[1, 0] = temp_matriz[2, 2] - temp_matriz[1, 2]
-			cv2.solve(temp_matriz[:2, :2], matriz_in, valores)
-			valor_x = valores[0, 0]
-			valor_y = valores[1, 0]
-			if 0 <= valor_x < imagen.shape[1] and 0 <= valor_y < imagen.shape[0]:
-				out[y, x] = imagen[int(valor_y), int(valor_x)]
+			b_t[0, 0] = temp_matriz[2, 2] - temp_matriz[0, 2]
+			b_t[1, 0] = temp_matriz[2, 2] - temp_matriz[1, 2]
+			cv2.solve(temp_matriz[:2, :2], b_t, valores)
+			valor_x = int(valores[0, 0])
+			valor_y = int(valores[1, 0])
+			if 0 <= valor_y and valor_y< imagen.shape[0] and 0 <= valor_x and valor_x < imagen.shape[1]:
+				out[y, x] = imagen[valor_y, valor_x]
 	return out
 def order_points(pts):
 	rect = np.zeros((4, 2), dtype = "float32")
@@ -131,14 +130,63 @@ def four_point_transform(image, pts):
 	heightA = np.sqrt(((tr[0] - br[0]) ** 2) + ((tr[1] - br[1]) ** 2))
 	heightB = np.sqrt(((tl[0] - bl[0]) ** 2) + ((tl[1] - bl[1]) ** 2))
 	maxHeight = max(int(heightA), int(heightB))
-	dst = np.array([[0, 0],[maxWidth - 1, 0],[maxWidth - 1, maxHeight - 1],[0, maxHeight - 1]], dtype = "float32")
+	dst = np.array([[0, 0],[maxWidth - 1, 0],[maxWidth - 1, maxHeight - 1],[0, maxHeight - 1]], dtype = 'float32')
 	M = get_PerspectiveTransform(rect, dst)
-	#warped = warpperspective_(image, M, (maxWidth, maxHeight))
-	warped = cv2.warpPerspective(image, M, (maxWidth, maxHeight))# return the warped image
-	return warped
-#a=[[211,388],[721,995],[608,365],[263,1061],]
-
-
+	warped = warpperspective_(image, M, (maxWidth, maxHeight))
+	return np.uint8(warped)
+def thresold_adaptativo(direccion,w_size,cf):#segundo parametro debe ser impar mayor que 1
+    img=cv2.imread(direccion)
+    if img is not None:
+        #mostramos las imagenes originales
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        cv2.imshow('Imagen inicial 1',img)
+        cv2.waitKey()
+        #ajustamos el tamaño de la imagen 2 a la de la imagen 1
+        #creamos una imagen en negro
+        out=np.zeros(shape=img.shape,dtype=np.uint8)
+        #matriz_umbral=np.zeros(shape=img.shape,dtype=np.uint8)
+        submatrix=[]
+        parametro=int(w_size/2)
+        valores=[0,0,0,0]
+        tam=[0,0]
+        suma=0
+        #aplicamos la suma en los 3 canales
+        for i in range(img.shape[0]):
+            for j in range(img.shape[1]):
+                #obtenemos las coordenadas para generar la submatriz
+                if i-parametro>=0:
+                    valores[0]=i-parametro
+                else:
+                    valores[0]=0
+                if i+parametro<img.shape[0]:
+                    valores[1]=i+parametro+1
+                else:
+                    valores[1]=img.shape[0]
+                if j-parametro>=0:
+                    valores[2]=j-parametro
+                else:
+                    valores[2]=0
+                if j+parametro<img.shape[1]:
+                    valores[3]=j+parametro+1
+                else:
+                    valores[3]=img.shape[1]
+                #generamos la submatriz
+                submatrix=np.zeros(shape=[valores[1]-valores[0]-1,valores[3]-valores[2]-1])
+                submatrix=img[valores[0]:valores[1]:1,valores[2]:valores[3]:1].copy()
+                #sacamos el promedio
+                suma=int(np.sum(submatrix)/(submatrix.shape[0]*submatrix.shape[1]))
+                suma=suma-(cf) #restamos con el valor statico
+                #aplicamos thresholding
+                if img[i][j]>=suma:
+                    out[i][j]=255
+                else:
+                    out[i][j]=0 
+        cv2.imshow('Imagen final',out)
+        cv2.waitKey()
+        return(out)
+        #guardamos la imagen generada
+    else:
+        return(None)
 def hist_eq(imname):
     img = cv2.imread(imname)
     #Si el archivo es imagen:
