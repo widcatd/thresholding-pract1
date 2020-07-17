@@ -37,7 +37,7 @@ BoxLayout:
             MDLabel:
                 halign: 'center'
                 Image:
-                    size: 500,500
+                    size: 800,500
                     id: img0
 
         MDBottomNavigationItem:
@@ -49,7 +49,7 @@ BoxLayout:
                 orientation:'vertical'
                 align: 'center'
                 BoxLayout:
-                    size: 500,500
+                    size: 800,500
                     Image:
                         size: 500,500
                         id: img
@@ -71,7 +71,6 @@ BoxLayout:
                 CustButton:
                     id:bott
                     text: "Transformar"
-                    on_press: 
 
 
         MDBottomNavigationItem:
@@ -81,23 +80,42 @@ BoxLayout:
 
             MDLabel:
                 BoxLayout:
-                    size: 500,500
+                    size: 800,500
                     orientation:'vertical'
                     spacing: 10
                     rows: 3
                     BoxLayout:
                         orientation:'horizontal'
                         Image:
-                            id: imgtmp
+                            size: 350,350
+                            id: imgorig
                         Image:
-                            id: imgfn
+                            size: 350,350
+                            id: imgtmp
                     BoxLayout:
-                        size_hint: 1, .3
+                        size_hint: 1, .1
                         CustButton:
+                            id:btn_hst
                             text: "Aplicar Histogram Equalitation"
 
                         CustButton:
+                            id:btn_cs
                             text: "Aplicar Contrast Stretching"
+                        
+                        CustButton:
+                            id:btn_csa
+                            text: "Aplicar Contrast Stretching Adaptativo"
+                    BoxLayout:
+                        size_hint: 1, .1
+
+                        CustButton:
+                            id:btn_del
+                            text: "Deshacer Cambios"
+
+                        CustButton:
+                            id:btn_sav
+                            text: "Guardar Cambios"
+
 '''
 class DragLabel(DragBehavior, Label):
     pass
@@ -109,6 +127,8 @@ class MainApp(MDApp):
         self.theme_cls.theme_style = "Dark"
         self.theme_cls.primary_palette = "DeepPurple"
         self.filePath=""
+        self.statdir="./tmp/static.jpg"
+        self.tmpdir="./tmp/process.jpg"
         self.cont=1
         Window.bind(on_dropfile=self._on_file_drop)
         super().__init__(**kwargs)
@@ -119,6 +139,9 @@ class MainApp(MDApp):
         self.root.ids.u_l.x=0
         self.root.ids.u_l.y=0
         self.root.ids.bott.bind(on_press=self.f1)
+        self.root.ids.btn_hst.bind(on_press=self.f_hist)
+        self.root.ids.btn_del.bind(on_press=self.rest)
+        self.root.ids.btn_sav.bind(on_press=self.f2)
         #self.root.ids.bott.on_press=self.f1()
         
     
@@ -139,29 +162,44 @@ class MainApp(MDApp):
         l=functions.transform_in(points[0][0],points[0][1],w,h,500,500) #(0,0,900,450,500,500) =0,125
         #self.root.ids.u_l.x=0
         #self.root.ids.u_l.y=0
-        self.root.ids.u_l.x=int(l[0])
-        self.root.ids.u_l.y=int(l[1])
+        self.root.ids.u_l.x=int(l[0]-65)
+        self.root.ids.u_l.y=int(l[1]-50)
         l=functions.transform_in(points[1][0],points[1][1],w,h,500,500)
-        self.root.ids.u_r.x=int(l[0])
-        self.root.ids.u_r.y=int(l[1])
+        self.root.ids.u_r.x=int(l[0]-65)
+        self.root.ids.u_r.y=int(l[1]-50)
         l=functions.transform_in(points[2][0],points[2][1],w,h,500,500)
-        self.root.ids.d_l.x=int(l[0])
-        self.root.ids.d_l.y=int(l[1])
+        self.root.ids.d_l.x=int(l[0]-65)
+        self.root.ids.d_l.y=int(l[1]-50)
         l=functions.transform_in(points[3][0],points[3][1],w,h,500,500)
-        self.root.ids.d_r.x=int(l[0])
-        self.root.ids.d_r.y=int(l[1])
+        self.root.ids.d_r.x=int(l[0]-65)
+        self.root.ids.d_r.y=int(l[1]-50)
 
     def f1(self,instance):
         a=functions.puntos(self.filePath)
+        #a=[[self.root.ids.u_l.x,self.root.ids.u_l.y],[self.root.ids.u_r.x,self.root.ids.u_r.y],[self.root.ids.d_l.x,self.root.ids.d_l.y],[self.root.ids.d_r.x,self.root.ids.d_r.y]]
         temporal=np.array(a)
         img=functions.aux(self.filePath)
         b=functions.four_point_transform(img,temporal)
-        sav("./tmp/process.jpg",b)
-        self.root.ids.imgtmp.source = "./tmp/process.jpg"
+        sav(self.tmpdir,b)
+        sav(self.statdir,b)
+        self.root.ids.imgorig.source = self.statdir
+        self.root.ids.imgorig.reload()
+        self.root.ids.imgtmp.source = self.tmpdir
         self.root.ids.imgtmp.reload()
 
-    def f2(self):
-        sav("./out/"+str(self.cont)+".jpg",functions.aux("./tmp/process.jpg"))
+    def f2(self,instance):
+        sav("./out/"+str(self.cont)+".jpg",functions.aux(self.tmpdir))
+
+    def f_hist(self,instance):
+        sav(self.tmpdir,functions.hist_eq(self.tmpdir))
+        self.root.ids.imgtmp.reload()
+
+    def rest(self,instance):
+        sav(self.tmpdir,functions.aux(self.statdir))
+        self.root.ids.imgtmp.reload()
+
+
+
 
 
 
