@@ -19,9 +19,6 @@ objpoints = [] # 3D puntos en el espacio del mundo real
 imgpoints = [] # 2D puntos en el plano de la imagen
 correct_idx = []
 
-print("Verifique manualmente si las esquinas son correctas")
-print("presione 'a' para corregir o espere 5 segundos para error")
-
 for idx, fname in enumerate(imagenes):
     img = cv2.imread(fname)
     gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
@@ -44,9 +41,6 @@ for idx, fname in enumerate(imagenes):
             continue
         else:
             continue
-
-print(correct_idx)
-# Utilice solo las imágenes con las esquinas "correctas" para la calibración
 cv2.destroyAllWindows()
 ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, gray.shape[::-1],None,None)
 
