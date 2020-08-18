@@ -1,15 +1,14 @@
 import numpy as np
 import cv2
-import todas
-
-IMAGENES_RUTA = 'image/*left.jpg'
-GUARDAR_RUTA = "parameters/parameters_left.yaml"
+import glob
+IMAGENES_RUTA = 'imagenes/*left.jpg'
+GUARDAR_RUTA = "parametros/parameters_left.yaml"
 
 # Ingrese todas las imágenes desde una cámara 
-imagenes = todas.todas(IMAGENES_RUTA)
+imagenes = glob.glob(IMAGENES_RUTA)
 
 # Criterios de terminación 
-criterio = (cv2.TERM_CRITERIO_EPS + cv2.TERM_CRITERIO_MAX_ITER, 20, 0.001)
+criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 20, 0.001)
 
 # preparar puntos de objeto
 objp = np.zeros((7*9,3), np.float32)
@@ -32,10 +31,10 @@ for idx, fname in enumerate(imagenes):
 
     # Si lo encuentra, agregue puntos de objeto
     if ret == True:
-        corners2 = cv2.cornerSubPix(gray,corners,(11,11),(-1,-1),criterio)
+        corners2 = cv2.cornerSubPix(gray,corners,(11,11),(-1,-1),criteria)
         # Dibujar y mostrar las esquinas
         img = cv2.drawChessboardCorners(img, (9,7), corners2,ret)
-        cv2.putText(img, str(idx), (40, 50), cv2.FUENTE, 2.0, (0, 0, 255), 2)
+        cv2.putText(img, str(idx), (40, 50), cv2.FONT_HERSHEY_PLAIN, 2.0, (0, 0, 255), 2)
         cv2.imshow('img',img)
         key = cv2.waitKey(5000)
         if key & 0xFF == ord('a'):
@@ -52,7 +51,7 @@ cv2.destroyAllWindows()
 ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, gray.shape[::-1],None,None)
 
 # ---------- Guardar la calibración -----------------
-cv_file = cv2.FileStorage(GUARDAR_RUTA, cv2.FILE_ARCHIVO_ESCRIBIR)
+cv_file = cv2.FileStorage(GUARDAR_RUTA, cv2.FILE_STORAGE_WRITE)
 cv_file.write("camera_matrix", mtx)
 cv_file.write("dist_coeff", dist)
 cv_file.release()
