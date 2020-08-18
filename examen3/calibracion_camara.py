@@ -42,9 +42,9 @@ for idx, fname in enumerate(imagenes):
         else:
             continue
 cv2.destroyAllWindows()
+#calibramos la camara
 ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, gray.shape[::-1],None,None)
 
-# ---------- Guardar la calibración -----------------
 cv_file = cv2.FileStorage(GUARDAR_RUTA, cv2.FILE_STORAGE_WRITE)
 cv_file.write("camera_matrix", mtx)
 cv_file.write("dist_coeff", dist)
